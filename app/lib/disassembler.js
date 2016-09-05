@@ -1,5 +1,6 @@
-const fsExtra = require('fs-extra');
-const fs   = require('fs');
+const Promise = require('bluebird');
+const fsExtra = Promise.promisifyAll(require('fs-extra'));
+const fs   = Promise.promisifyAll(require('fs'));
 const uuid = require('uuid');
 const exec = require('child_process').exec;
 
@@ -7,66 +8,120 @@ class Disassembler {
 
   constructor(newLogger) {
     this.logger = newLogger;
-     // creates the java file
-    this.compileJavaFile = (dir, code, disassemble, done) => {
+  }
+
+  run(code, done, tmpDir="/tmp/javabytes") {
+    this.findUniqueDir(tmpDir)
+    .then((args) => {
+      return this.makeDir({dirName: args.dirName, code});
+    })
+    .then((args) => {
+      return this.compileJavaFile(args);
+    })
+    .then((args) => {
+      return this.disassemble(args);
+    })
+    .then((args) => {
+      return this.cleanup(args);
+    })
+    .then((obj) => {
+      done(obj);
+    })
+    .catch((obj) => {
+      done(obj);
+    });
+  }
+
+  // make a tmp dir where work can happen
+  makeDir(obj) {
+    const dirName = obj.dirName;
+    const code = obj.code;
+    return new Promise((resolve, reject) => {
+      fsExtra.mkdirs(dirName, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({dirName, code});
+        }
+      });
+    });
+  }
+
+  // creates and compiles the java source
+  compileJavaFile(obj) {
+    const dirName = obj.dirName;
+    const code = obj.code;
+    return new Promise((resolve, reject) => {
       const classname = this.extractClass(code);
-      const fileLocation = `${dir}/${classname}.java`;
+      const fileLocation = `${dirName}/${classname}.java`;
 
       fsExtra.outputFile(fileLocation, code, (err) => {
         if (err) {
           this.logger.error(err);
+          reject({
+            errors: "Unable to create file"
+          });
         }
 
         const cmd = `javac ${fileLocation}`;
         exec(cmd, (error, stdout, stderr) => {
           if (stderr) {
             this.logger.error(stderr);
-            done({
-              errors: this.cleanseOutput(stderr, `${dir}/`)
+            reject({
+              errors: this.cleanseOutput(stderr, `${dirName}/`)
             });
           } else {
-            disassemble(dir, classname, code, done);
+            resolve({dirName, classname});
           }
         });
       });
-    }
+    });
+  }
 
-    this.disassemble = (dir, classname, rawCode, done) => {
-      const cmd = `javap -c ${dir}/${classname}.class`;
+  // disassembles the given source class file
+  disassemble(obj) {
+    const dirName = obj.dirName;
+    const classname = obj.classname;
+    return new Promise( (resolve, reject) => {
+      const cmd = `javap -c ${dirName}/${classname}.class`;
       exec(cmd, (error, stdout, stderr) => {
         if (stderr) {
           this.logger.error(stderr);
-          done({
-            errors: this.cleanseOutput(stderr, `${dir}/`)
+          reject({
+            errors: this.cleanseOutput(stderr, `${dirName}/`)
           });
         } else {
-          fsExtra.remove(dir, function(){});
-          done({
-            result: stdout
+          resolve({
+            result: stdout,
+            dirName
           });
         }
       });
-    }
+    });
   }
-  
-  run(code, done) {
-    this.createUniqueDir(this.compileJavaFile, this.disassemble, code, done);
-  } 
 
-  // generates a uuid that will ensure a unique uuid for tmp dir creation
-  createUniqueDir(compile, disassemble, code, done, tmpDir="/tmp/javabytes") {
+  // delete tmp files
+  cleanup(obj) {
+    const dirName = obj.dirName;
+    const result = obj.result;
+    return new Promise((resolve, reject) => {
+      fsExtra.remove(dirName, function(){});
+      resolve({result});
+    });
+  }
+
+  // find a unique directory name
+  findUniqueDir(tmpDir) {
     const guid = uuid.v4().replace(/-/g, '');
     const dirName = `${tmpDir}/${guid}`;
-    fs.stat(dirName, (err, stats) => {
-      if (err) {
-        // error means no dir, we are good
-        fsExtra.mkdirs(dirName, function (err) {
-          compile(dirName, code, disassemble, done);
-        });
-      } else {
-        // dir exists, keep going
-        createUniqueDir(compile, disassemble, code, done, tmpDir);
-      }
+    return new Promise((resolve, reject) => {
+      fs.stat(dirName, (err, stats) => {
+        if (err) {
+          resolve({dirName}); 
+        } else {
+          findUniqueDir();
+        }
+      });
     });
   }
 
@@ -81,6 +136,7 @@ class Disassembler {
     }
   }
 
+  // remove the randomly generated dir names and make it into a valid json obj
   cleanseOutput(output, location) {
     const re = new RegExp(location, "g");
     return output.replace(re, '').replace(/"/g, '\\"');

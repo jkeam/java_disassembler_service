@@ -15,13 +15,16 @@ const Disassembler = require("../app/lib/disassembler");
 describe("Disassembler", function() {
   const disassembler = new Disassembler(logger);
  
-  it("can create unique dir", function(done) {
+  it("can make dir", function(done) {
     const code = 'public class Person { public String sayHi() {return "hi";} }';
-    const success = (dir, code, disassemble) => {
+    const dirName = '/tmp/javabytes/test/abcd';
+    disassembler.makeDir({dirName, code}).then((obj) => {
+      expect(obj.code).to.equal(code);
+      expect(obj.dirName).to.equal(dirName);
       done();
-    };
-
-    disassembler.createUniqueDir(success, null, code, null, "/tmp/javabytes/test");
+    }).catch((e) => {
+      done(e);
+    })
   });
 
   it("can extract java class", function() {
@@ -30,53 +33,74 @@ describe("Disassembler", function() {
   });
 
   it("can compile java file", function(done) {
-    const dir = "/tmp/javabytes/test/abcd";
+    const dirName = "/tmp/javabytes/test/abcd";
     const code = 'public class Person { public String sayHi() {return "hi";} }';
-    const success = function(dir, code, disassemble) {
-      done();
-    };
-    const failure = function(error) {
-      done(new Error(JSON.stringify(error)));
-    };
 
-    expect(disassembler.compileJavaFile(dir, code, success, failure));
+    disassembler.compileJavaFile({dirName, code}).then((obj) => {
+      expect(obj.classname).to.equal('Person');
+      expect(obj.dirName).to.equal(dirName);
+      done();
+    }).catch((e) => {
+      done(e);
+    })
   });
 
   it("can handle compile failures", function(done) {
-    const dir = "/tmp/javabytes/test/abcd";
+    const dirName = "/tmp/javabytes/test/abcd";
     const code = 'public class Person { public String sayHi() {return "hi"}; }';
-    const success = function (dir, code, disassemble) {
-    };
-    const finish = function(obj) {
-      expect(obj).to.deep.equal({
-  "errors": "Person.java:1: error: ';' expected\npublic class Person { public String sayHi() {return \\\"hi\\\"}; }\n                                                        ^\n1 error\n"
-});
+
+    disassembler.compileJavaFile({dirName, code}).then((obj) => {
+      done(new Error('Should not get here'));
+    }).catch((e) => {
       done();
-    };
-    expect(disassembler.compileJavaFile(dir, code, success, finish));
+    })
   });
 
-  it("can can disassemble", function(done) {
-    const dir = "/tmp/javabytes/test/abcd";
+  it("can disassemble", function(done) {
+    const dirName = "/tmp/javabytes/test/abcd";
     const classname = "Person";
-    const code = 'public class Person { public String sayHi() {return "hi");} }';
-    const success = (disassembled) => {
+
+    disassembler.disassemble({dirName, classname}).then((obj) => {
+      expect(obj.result).to.not.be.null;
       done();
-    };
-    expect(disassembler.disassemble(dir, classname, code, success));
+    }).catch((e) => {
+      done(e);
+    })
   });
 
   it("can cleanse output", function() {
     const output = `{"errors": "/tmp/javabytes/1394ac497f074da5bc314fe2106dca50/Person.java:1: error: ';' expected\npublic class Person { public String sayHi() {return "hi");} }"}`;
-
     const expected = `{\\"errors\\": \\"Person.java:1: error: ';' expected\npublic class Person { public String sayHi() {return \\"hi\\");} }\\"}`;
-
     expect(disassembler.cleanseOutput(output, "/tmp/javabytes/1394ac497f074da5bc314fe2106dca50/")).to.equal(expected);
   });
 
+  it("can find unique directory", function(done) {
+    disassembler.findUniqueDir().then((data) => {
+      expect(data).to.not.be.null;
+      done();
+    }).catch((e) => {
+      done(e);
+    });
+  });
+
+  it("can run test", function(done) {
+    const code = 'public class Person { public String sayHi() {return "hi";} }';
+    return disassembler.run(code, function(obj) {
+      done();
+    }, "/tmp/javabytes/test");
+  });
+
+  it("can cleanup", function(done) {
+    const dirName = "/tmp/javabytes/test";
+    const result = 'disassembled_code_here';
+    disassembler.cleanup({dirName, result}).then((obj) => {
+      done();
+    }).catch((e) => {
+      done(e);
+    });
+  });
+
   after(function() {
-    // cleanup
-    const dir = "/tmp/javabytes/test";
-    fsExtra.removeSync(dir);
+    fsExtra.removeSync("/tmp/javabytes/test");
   });
 });
