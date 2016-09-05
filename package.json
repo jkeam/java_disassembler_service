@@ -2,9 +2,10 @@
   "name": "java_disassembler_service",
   "version": "1.0.0",
   "description": "A Java disassembler micro service.",
-  "main": "server.js",
+  "main": "./app/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./app/server.js",
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "keywords": [
     "java",
@@ -12,5 +13,16 @@
     "docker"
   ],
   "author": "Jon Keam <jpkeam@gmail.com> (http://jonkeam.com)",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "mocha": "^3.0.2"
+  },
+  "dependencies": {
+    "busboy": "^0.2.13",
+    "fs-extra": "^0.30.0",
+    "querystring": "^0.2.0",
+    "winston": "^2.2.0"
+  }
 }

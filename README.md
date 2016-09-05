@@ -5,6 +5,10 @@ A micro-service that disassembles your Java code.
 
 ### Prereq
 1.  Docker
+2.  Tmp dir exists
+  ```
+  mkdir /tmp/javabytes
+  ```
 
 ### Build Image
 Some quick and useful docker commands:
