@@ -1,4 +1,5 @@
 # Java Disassembler Service
+[![Build Status](https://travis-ci.org/jkeam/java_disassembler_service.svg?branch=master)](https://travis-ci.org/jkeam/java_disassembler_service)
 A micro-service that disassembles your Java code.
 
 ## Setup
