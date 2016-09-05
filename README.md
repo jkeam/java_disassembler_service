@@ -1,5 +1,5 @@
 # Java Disassembler Service
-A very simple service that disassembles your Java code.
+A micro-service that disassembles your Java code.
 
 ## Setup
 
