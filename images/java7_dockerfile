@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:7
 
 # install wget
 RUN apt-get update && apt-get -f install && apt-get install wget
@@ -19,5 +19,5 @@ RUN npm install
 # bundle app source
 COPY . /usr/src/app
 
-EXPOSE 8888
+EXPOSE 8887
 CMD [ "npm", "start" ]
