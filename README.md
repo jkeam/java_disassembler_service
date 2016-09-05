@@ -28,7 +28,7 @@ Some quick and useful docker commands:
 #### Java 6
 1.  Build the image from the Dockerfile
   ```
-  docker build -t javabytes/java6-diss-service -f ./images/java6_dockerfile .
+  docker build -t javabytes/java6-diss-service -f ./dockerfiles/java6_dockerfile .
   ```
 
 2.  Run docker
@@ -44,7 +44,7 @@ Some quick and useful docker commands:
 #### Java 7
 1.  Build the image from the Dockerfile
   ```
-  docker build -t javabytes/java7-diss-service -f ./images/java7_dockerfile .
+  docker build -t javabytes/java7-diss-service -f ./dockerfiles/java7_dockerfile .
   ```
 
 2.  Run docker
@@ -60,7 +60,7 @@ Some quick and useful docker commands:
 #### Java 8
 1.  Build the image from the Dockerfile
   ```
-  docker build -t javabytes/java8-diss-service -f ./images/java8_dockerfile .
+  docker build -t javabytes/java8-diss-service -f ./dockerfiles/java8_dockerfile .
   ```
 
 2.  Run docker
@@ -76,7 +76,7 @@ Some quick and useful docker commands:
 #### Java 9
 1.  Build the image from the Dockerfile
   ```
-  docker build -t javabytes/java9-diss-service -f ./images/java9_dockerfile .
+  docker build -t javabytes/java9-diss-service -f ./dockerfiles/java9_dockerfile .
   ```
 
 2.  Run docker
