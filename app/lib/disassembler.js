@@ -125,7 +125,7 @@ class Disassembler {
     });
   }
 
-  // extract class name and lower the first letter
+  // extract class name
   extractClass(code) {
     const pattern = /\s*(public|private)\s+class\s+(\w+)\s+((extends\s+\w+)|(implements\s+\w+( ,\w+)*))?\s*\{/;
     const matches = pattern.exec(code);
