@@ -1,7 +1,7 @@
 FROM openjdk:9
 
 # install wget
-RUN apt-get update && apt-get -f install && apt-get install wget
+RUN apt-get update && apt-get -f install && apt-get install wget && apt-get install -y gnupg
 
 # install node and npm
 RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash -
