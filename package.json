@@ -7,6 +7,10 @@
     "start": "node ./app/server.js",
     "test": "./node_modules/.bin/mocha --reporter spec"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkeam/java_disassembler_service.git"
+  },
   "keywords": [
     "java",
     "disassembler",
@@ -19,11 +23,11 @@
     "chai-spies": "^0.7.1",
     "mocha": "^3.0.2"
   },
+  "homepage": "https://github.com/jkeam/java_disassembler_service#readme",
   "dependencies": {
+    "base_disassembler_service": "jkeam/base_disassembler_service",
     "bluebird": "^3.4.6",
-    "busboy": "^0.2.13",
     "fs-extra": "^0.30.0",
-    "uuid": "^2.0.2",
-    "winston": "^2.2.0"
+    "uuid": "^2.0.2"
   }
 }

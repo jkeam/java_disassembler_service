@@ -6,8 +6,9 @@ const exec = require('child_process').exec;
 
 class Disassembler {
 
-  constructor(newLogger) {
-    this.logger = newLogger;
+  constructor(options={logger, guid}) {
+    this.logger = options.logger;
+    this.guid = options.guid;
   }
 
   run(code, done, tmpDir="/tmp/javabytes") {
@@ -117,7 +118,7 @@ class Disassembler {
     return new Promise((resolve, reject) => {
       fs.stat(dirName, (err, stats) => {
         if (err) {
-          resolve({dirName}); 
+          resolve({dirName});
         } else {
           findUniqueDir();
         }
@@ -130,7 +131,7 @@ class Disassembler {
     const pattern = /\s*(public|private)\s+class\s+(\w+)\s+((extends\s+\w+)|(implements\s+\w+( ,\w+)*))?\s*\{/;
     const matches = pattern.exec(code);
     if (matches) {
-      return matches[2]; 
+      return matches[2];
     } else {
       return uuid.v4();
     }

@@ -13,8 +13,8 @@ const logger  = new (winston.Logger)({
 const Disassembler = require("../app/lib/disassembler");
 
 describe("Disassembler", function() {
-  const disassembler = new Disassembler(logger);
- 
+  const disassembler = new Disassembler({logger, guid: '333'});
+
   it("can make dir", function(done) {
     const code = 'public class Person { public String sayHi() {return "hi";} }';
     const dirName = '/tmp/javabytes/test/abcd';
