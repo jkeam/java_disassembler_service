@@ -64,14 +64,15 @@ class Disassembler {
           });
         }
 
-        const cmd = `javac ${fileLocation}`;
-        exec(cmd, (error, stdout, stderr) => {
-          if (stderr) {
-            this.logger.error(stderr);
-            reject({
-              errors: this.cleanseOutput(stderr, `${dirName}/`)
-            });
+        exec(`javac ${fileLocation}`, {shell: '/bin/bash'}, (error, stdout, stderr) => {
+          if (error) {
+            this.logger.error(`${this.guid}: Error -> ${error}`);
+            reject({ errors: error });
+          } else if (stderr) {
+            this.logger.error(`${this.guid}: Stderr-> ${stderr}`);
+            reject({ errors: this.cleanseOutput(stderr, `${dirName}/`) });
           } else {
+            this.logger.verbose(`${this.guid}: Disassembling successful`);
             resolve({dirName, classname});
           }
         });
