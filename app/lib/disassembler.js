@@ -2,7 +2,7 @@ const Promise = require('bluebird');
 const fsExtra = Promise.promisifyAll(require('fs-extra'));
 const fs   = Promise.promisifyAll(require('fs'));
 const uuid = require('uuid');
-const exec = require('child_process').exec;
+const exec = require('child_process').execFile;
 
 class Disassembler {
 
@@ -65,10 +65,7 @@ class Disassembler {
         }
 
         exec(`javac ${fileLocation}`, {shell: '/bin/bash'}, (error, stdout, stderr) => {
-          if (error) {
-            this.logger.error(`${this.guid}: Error -> ${error}`);
-            reject({ errors: error });
-          } else if (stderr) {
+          if (stderr) {
             this.logger.error(`${this.guid}: Stderr-> ${stderr}`);
             reject({ errors: this.cleanseOutput(stderr, `${dirName}/`) });
           } else {
@@ -85,8 +82,7 @@ class Disassembler {
     const dirName = obj.dirName;
     const classname = obj.classname;
     return new Promise( (resolve, reject) => {
-      const cmd = `javap -c ${dirName}/${classname}.class`;
-      exec(cmd, (error, stdout, stderr) => {
+      exec(`javap -c ${dirName}/${classname}.class`, {shell: '/bin/bash'}, (error, stdout, stderr) => {
         if (stderr) {
           this.logger.error(stderr);
           reject({
