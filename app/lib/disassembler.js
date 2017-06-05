@@ -117,7 +117,9 @@ class Disassembler {
         if (err) {
           resolve({dirName});
         } else {
-          findUniqueDir();
+          findUniqueDir().then((arg) => {
+            resolve(arg)
+          });
         }
       });
     });
