@@ -1,6 +1,6 @@
 {
   "name": "java_disassembler_service",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A Java disassembler micro service.",
   "main": "./app/server.js",
   "scripts": {
@@ -25,9 +25,7 @@
   },
   "homepage": "https://github.com/jkeam/java_disassembler_service#readme",
   "dependencies": {
-    "base_disassembler_service": "jkeam/base_disassembler_service",
-    "bluebird": "^3.4.6",
-    "fs-extra": "^0.30.0",
-    "uuid": "^2.0.2"
+    "fs-extra": "^9.0.1",
+    "uuid": "^8.3.2"
   }
 }

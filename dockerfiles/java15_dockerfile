@@ -1,12 +1,8 @@
-FROM openjdk:8
-
-# install wget
-RUN apt-get update && apt-get -f install && apt-get install wget
+FROM openjdk:15
 
 # install node and npm
-RUN wget -qO- https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install -y nodejs build-essential
-RUN wget -qO- https://npmjs.org/install.sh | bash -
+RUN echo -e "[nodejs]\nname=nodejs\nstream=14\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/nodejs.module
+RUN microdnf install nodejs npm
 
 # create app dir
 RUN mkdir -p /usr/src/app
