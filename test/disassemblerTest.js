@@ -1,19 +1,13 @@
 const fsExtra = require('fs-extra');
-const chai    = require("chai");
+const chai    = require('chai');
 const expect  = chai.expect;
 const spies = require('chai-spies');
 chai.use(spies);
 
-// use null logger
-const winston = require('winston');
-const logger  = new (winston.Logger)({
-  transports: []
-});
-
 const Disassembler = require("../app/lib/disassembler");
 
 describe("Disassembler", function() {
-  const disassembler = new Disassembler({logger, guid: '333'});
+  const disassembler = new Disassembler({logger: console, guid: '333'});
 
   it("can make dir", function(done) {
     const code = 'public class Person { public String sayHi() {return "hi";} }';
