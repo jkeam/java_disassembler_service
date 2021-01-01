@@ -8,19 +8,15 @@ const env  = process.env.NODE_ENV || 'dev';
 const logLevel = 'verbose';
 const diss = new Disassembler({ logger: console, guid: uuidv4() });
 
-const success = (res, result = '', success = true)=> {
+const success = (res, result = '')=> {
   res.writeHead(200);
-  res.end(JSON.stringify({
-    message: 'success',
-    success,
-    result
-  }));
+  res.end(result);
   return res;
 };
 
 const requestListener = function(req, res) {
   // only process post to root
-  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Type', 'application/text');
   if (req.method !== 'POST' && req.url !== '/') {
     return success(res);
   }
@@ -36,12 +32,12 @@ const requestListener = function(req, res) {
         if (result.result) {
           return success(res, result.result);
         }
-        return success(res, result.errors, false);
+        return success(res, result.errors);
       };
       diss.run(parsed.code, done);
     } catch (e) {
       console.error(e);
-      return success(res, e.getMessage(), false);
+      return success(res, e.getMessage());
     }
   });
 };
