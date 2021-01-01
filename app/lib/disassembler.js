@@ -32,7 +32,7 @@ class Disassembler {
     return new Promise((resolve, reject) => (
       mkdirs(dirName, (err) => {
         if (err) {
-          return reject(err);
+          return reject({ error: err });
         }
         resolve({dirName, code});
       })
@@ -48,13 +48,13 @@ class Disassembler {
       outputFile(fileLocation, code, (err) => {
         if (err) {
           this.logger.error(err);
-          return reject({ errors: "Unable to create file" });
+          return reject({ error: "Unable to create file" });
         }
 
         execFile('javac', [fileLocation], { shell: true }, (error, stdout, stderr) => {
           if (stderr) {
             this.logger.error(`${this.guid}: Stderr-> ${stderr}`);
-            return reject({ errors: this.cleanseOutput(stderr, `${dirName}/`) });
+            return reject({ error: this.cleanseOutput(stderr, `${dirName}/`) });
           }
           resolve({dirName, classname});
         });
@@ -68,7 +68,7 @@ class Disassembler {
       execFile('javap', ['-c', `${dirName}/${classname}.class`], { shell: true }, (error, stdout, stderr) => {
         if (stderr) {
           this.logger.error(stderr);
-          return reject({ errors: this.cleanseOutput(stderr, `${dirName}/`) });
+          return reject({ error: this.cleanseOutput(stderr, `${dirName}/`) });
         }
         resolve({ result: stdout, dirName });
       })

@@ -32,12 +32,13 @@ const requestListener = function(req, res) {
         if (result.result) {
           return success(res, result.result);
         }
-        return success(res, result.errors);
+        console.error(result.error);
+        return success(res, result.error);
       };
       diss.run(parsed.code, done);
     } catch (e) {
       console.error(e);
-      return success(res, e.getMessage());
+      return success(res, e.message);
     }
   });
 };
