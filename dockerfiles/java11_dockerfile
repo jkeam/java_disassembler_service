@@ -23,4 +23,4 @@ COPY . /usr/src/app
 USER nobody
 
 EXPOSE 3000
-ENTRYPOINT ["npm", "start"]
+CMD ["/usr/bin/npm", "start"]

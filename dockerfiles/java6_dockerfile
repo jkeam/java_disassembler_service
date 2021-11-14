@@ -19,5 +19,8 @@ RUN npm install
 # bundle app source
 COPY . /usr/src/app
 
-EXPOSE 8886
-CMD [ "npm", "start" ]
+# switch user
+USER nobody
+
+EXPOSE 3000
+CMD ["/usr/bin/npm", "start"]

@@ -4,8 +4,8 @@ FROM openjdk:7
 RUN apt-get update && apt-get -f install && apt-get install wget
 
 # install node and npm
-RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash -
-RUN apt-get install -y nodejs build-essential
+RUN wget -qO- https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install --yes --force-yes nodejs build-essential
 RUN wget -qO- https://npmjs.org/install.sh | bash - 
 
 # create app dir
@@ -19,5 +19,8 @@ RUN npm install
 # bundle app source
 COPY . /usr/src/app
 
-EXPOSE 8887
-CMD [ "npm", "start" ]
+# switch user
+USER nobody
+
+EXPOSE 3000
+CMD ["/usr/bin/npm", "start"]

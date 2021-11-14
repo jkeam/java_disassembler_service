@@ -1,12 +1,15 @@
 FROM openjdk:9
 
 # install wget
-RUN apt-get update && apt-get -f install && apt-get install wget && apt-get install -y gnupg
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
+RUN apt-get --yes update && apt-get -f install && apt-get --yes install wget
+
+# RUN apt-get --yes update && apt-get -f install
 
 # install node and npm
-RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash -
+RUN curl -s https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs build-essential
-RUN wget -qO- https://npmjs.org/install.sh | bash - 
+RUN curl -s https://npmjs.org/install.sh | bash -
 
 # create app dir
 RUN mkdir -p /usr/src/app
@@ -19,5 +22,8 @@ RUN npm install
 # bundle app source
 COPY . /usr/src/app
 
-EXPOSE 8889
-CMD [ "npm", "start" ]
+# switch user
+USER nobody
+
+EXPOSE 3000
+CMD ["/usr/bin/npm", "start"]

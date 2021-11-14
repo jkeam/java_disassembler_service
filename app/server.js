@@ -15,8 +15,16 @@ const success = (res, result = '')=> {
 };
 
 const requestListener = function(req, res) {
-  // only process post to root
-  res.setHeader('Content-Type', 'application/text');
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET');
+  res.setHeader('Access-Control-Max-Age', 2592000); // 30 days
+  res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return success(res);
+  }
+
   if (req.method !== 'POST' && req.url !== '/') {
     return success(res);
   }

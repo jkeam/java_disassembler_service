@@ -31,66 +31,21 @@ Some quick and useful docker commands:
   docker rmi <image id>
   ```
 
-#### Java 6
+#### Java
+Instructions below assume X is the java version.
+
 1.  Build the image from the Dockerfile
-  ```
-  docker build -t javabytes/java6-diss-service -f ./dockerfiles/java6_dockerfile .
-  ```
+
+```
+docker build -t javabytes/javaX-diss-service -f ./dockerfiles/javaX_dockerfile .
+```
 
 2.  Run docker
-  ```
-  docker run -p 8886:8886 -d -e ENV_PORT=8886 javabytes/java6-diss-service
-  ```
+```
+docker run -p 3000:3000 javabytes/javaX-diss-service
+```
 
 3.  Ensure its running
   ```
-  curl -i localhost:8886
-  ```
-
-#### Java 7
-1.  Build the image from the Dockerfile
-  ```
-  docker build -t javabytes/java7-diss-service -f ./dockerfiles/java7_dockerfile .
-  ```
-
-2.  Run docker
-  ```
-  docker run -p 8887:8887 -d -e ENV_PORT=8887 javabytes/java7-diss-service
-  ```
-
-3.  Ensure its running
-  ```
-  curl -i localhost:8887
-  ```
-
-#### Java 8
-1.  Build the image from the Dockerfile
-  ```
-  docker build -t javabytes/java8-diss-service -f ./dockerfiles/java8_dockerfile .
-  ```
-
-2.  Run docker
-  ```
-  docker run -p 8888:8888 -d -e ENV_PORT=8888 javabytes/java8-diss-service
-  ```
-
-3.  Ensure its running
-  ```
-  curl -i localhost:8888
-  ```
-
-#### Java 9
-1.  Build the image from the Dockerfile
-  ```
-  docker build -t javabytes/java9-diss-service -f ./dockerfiles/java9_dockerfile .
-  ```
-
-2.  Run docker
-  ```
-  docker run -p 8889:8889 -d -e ENV_PORT=8889 javabytes/java9-diss-service
-  ```
-
-3.  Ensure its running
-  ```
-  curl -i localhost:8889
+  curl -i localhost:3000
   ```
