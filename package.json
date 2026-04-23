@@ -26,6 +26,6 @@
   "homepage": "https://github.com/jkeam/java_disassembler_service#readme",
   "dependencies": {
     "fs-extra": "^9.0.1",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   }
 }
